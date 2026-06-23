@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -12,19 +13,26 @@ body{
     margin:0;
     padding:0;
     background:#f5e6ff;
+    color:#333;
 }
+
+/* Header */
 
 header{
     background:linear-gradient(135deg,purple,#a64ca6);
     color:white;
     text-align:center;
-    padding:25px;
+    padding:30px;
 }
+
+/* Navigation */
 
 nav{
     background:purple;
     text-align:center;
     padding:15px;
+    position:sticky;
+    top:0;
 }
 
 nav a{
@@ -38,10 +46,12 @@ nav a:hover{
     color:yellow;
 }
 
+/* Sections */
+
 section{
-    padding:25px;
     max-width:1100px;
     margin:auto;
+    padding:30px;
 }
 
 h2{
@@ -49,63 +59,23 @@ h2{
     text-align:center;
 }
 
+/* Button */
+
 button{
     background:purple;
     color:white;
     border:none;
     padding:12px 20px;
-    border-radius:6px;
+    border-radius:8px;
     cursor:pointer;
+    font-size:16px;
 }
 
 button:hover{
     background:#a64ca6;
 }
 
-/* POPUP */
-
-.popup{
-    display:none;
-    position:fixed;
-    top:0;
-    left:0;
-    width:100%;
-    height:100%;
-    background:rgba(0,0,0,0.5);
-}
-
-.popup-content{
-    background:white;
-    width:350px;
-    padding:20px;
-    border-radius:12px;
-    text-align:center;
-    position:relative;
-    margin:15% auto;
-}
-
-.close{
-    position:absolute;
-    top:10px;
-    right:15px;
-    font-size:28px;
-    cursor:pointer;
-}
-
-form{
-    background:white;
-    padding:20px;
-    border-radius:10px;
-}
-
-input, textarea{
-    width:100%;
-    padding:10px;
-    margin-top:8px;
-    margin-bottom:15px;
-    border:1px solid #ccc;
-    border-radius:5px;
-}
+/* Gallery */
 
 .gallery-grid{
     display:grid;
@@ -120,12 +90,106 @@ input, textarea{
     border-radius:12px;
 }
 
-footer{
-    background:purple;
-    color:white;
+/* Form */
+
+form{
+    background:white;
+    padding:20px;
+    border-radius:10px;
+    box-shadow:0 2px 10px rgba(0,0,0,0.1);
+}
+
+input, textarea{
+
+    width:100%;
+    padding:12px;
+    margin-top:8px;
+    margin-bottom:15px;
+
+    border:1px solid #ccc;
+
+    border-radius:6px;
+
+    box-sizing:border-box;
+
+}
+
+.error{
+
+    color:red;
+
+    font-size:14px;
+
+}
+
+/* Popup */
+
+.popup{
+
+    display:none;
+
+    position:fixed;
+
+    top:0;
+
+    left:0;
+
+    width:100%;
+
+    height:100%;
+
+    background:rgba(0,0,0,0.5);
+
+}
+
+.popup-content{
+
+    background:white;
+
+    width:350px;
+
+    padding:20px;
+
+    border-radius:15px;
+
     text-align:center;
-    padding:15px;
-    margin-top:20px;
+
+    position:absolute;
+
+    top:50%;
+
+    left:50%;
+
+    transform:translate(-50%,-50%);
+
+}
+
+.close{
+
+    position:absolute;
+
+    right:20px;
+
+    top:10px;
+
+    font-size:30px;
+
+    cursor:pointer;
+
+}
+
+/* Footer */
+
+footer{
+
+    background:purple;
+
+    color:white;
+
+    text-align:center;
+
+    padding:20px;
+
 }
 
 </style>
@@ -135,15 +199,23 @@ footer{
 <body>
 
 <header>
-    <h1>GlowUp Hair and Beauty</h1>
-    <p>Your One Stop Beauty Destination</p>
+
+<h1>GlowUp Hair and Beauty</h1>
+
+<p>Your One Stop Beauty Destination</p>
+
 </header>
 
 <nav>
-    <a href="#home">Home</a>
-    <a href="#about">About</a>
-    <a href="#gallery">Gallery</a>
-    <a href="#contact">Contact</a>
+
+<a href="#home">Home</a>
+
+<a href="#about">About</a>
+
+<a href="#gallery">Gallery</a>
+
+<a href="#contact">Contact</a>
+
 </nav>
 
 <section id="home">
@@ -151,11 +223,16 @@ footer{
 <h2>Welcome to GlowUp Hair and Beauty</h2>
 
 <p>
+
 GlowUp Hair and Beauty offers professional hair styling,
-makeup, skincare, nail care and beauty treatments.
+
+makeup, skincare, nail care and beauty treatments designed
+
+to make every client look and feel their best.
+
 </p>
 
-<button id="popupBtn">Book Now</button>
+<button id="bookBtn">Book Now</button>
 
 </section>
 
@@ -164,8 +241,11 @@ makeup, skincare, nail care and beauty treatments.
 <h2>About Us</h2>
 
 <p>
-Founded in 2015, GlowUp Hair and Beauty provides affordable,
-high-quality beauty services for all clients.
+
+Founded in 2015, GlowUp Hair and Beauty has grown into a trusted
+
+beauty brand offering affordable, high-quality services.
+
 </p>
 
 </section>
@@ -176,14 +256,11 @@ high-quality beauty services for all clients.
 
 <div class="gallery-grid">
 
-<img src="https://images.unsplash.com/photo-1560066984-138dadb4c035?w=600"
-alt="Hair Styling">
+<img src="https://images.unsplash.com/photo-1560066984-138dadb4c035?w=600" alt="Hair Styling">
 
-<img src="https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=600"
-alt="Beauty Products">
+<img src="https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=600" alt="Beauty Products">
 
-<img src="https://images.unsplash.com/photo-1526045478516-99145907023c?w=600"
-alt="Salon Interior">
+<img src="https://images.unsplash.com/photo-1526045478516-99145907023c?w=600" alt="Salon Interior">
 
 </div>
 
@@ -199,17 +276,25 @@ alt="Salon Interior">
 
 <input type="text" id="name">
 
+<div id="nameError" class="error"></div>
+
 <label>Email</label>
 
 <input type="email" id="email">
+
+<div id="emailError" class="error"></div>
 
 <label>Phone Number</label>
 
 <input type="text" id="phone">
 
+<div id="phoneError" class="error"></div>
+
 <label>Message</label>
 
 <textarea id="message"></textarea>
+
+<div id="messageError" class="error"></div>
 
 <button type="submit">Send Message</button>
 
@@ -225,11 +310,14 @@ alt="Salon Interior">
 
 <span class="close">&times;</span>
 
-<h2>Booking Successful!</h2>
+<h2>🎉 Appointment Booking</h2>
 
 <p>
-Thank you for choosing GlowUp Hair and Beauty.
-Contact us to schedule your appointment.
+
+Thank you for choosing GlowUp Hair and Beauty!
+
+We look forward to serving you.
+
 </p>
 
 </div>
@@ -244,27 +332,27 @@ Contact us to schedule your appointment.
 
 <script>
 
-// POPUP
+/* POPUP */
 
-const popup = document.getElementById("popup");
+let popup = document.getElementById("popup");
 
-const popupBtn = document.getElementById("popupBtn");
+let bookBtn = document.getElementById("bookBtn");
 
-const closeBtn = document.querySelector(".close");
+let closeBtn = document.querySelector(".close");
 
-popupBtn.addEventListener("click", function(){
+bookBtn.onclick = function(){
 
     popup.style.display = "block";
 
-});
+}
 
-closeBtn.addEventListener("click", function(){
+closeBtn.onclick = function(){
 
     popup.style.display = "none";
 
-});
+}
 
-window.addEventListener("click", function(event){
+window.onclick = function(event){
 
     if(event.target == popup){
 
@@ -272,71 +360,85 @@ window.addEventListener("click", function(event){
 
     }
 
-});
+}
 
+/* FORM VALIDATION */
 
-// FORM VALIDATION
-
-document.getElementById("contactForm").addEventListener("submit", function(e){
+document.getElementById("contactForm").onsubmit = function(e){
 
 e.preventDefault();
 
-let name = document.getElementById("name").value.trim();
+document.getElementById("nameError").innerHTML="";
 
-let email = document.getElementById("email").value.trim();
+document.getElementById("emailError").innerHTML="";
 
-let phone = document.getElementById("phone").value.trim();
+document.getElementById("phoneError").innerHTML="";
 
-let message = document.getElementById("message").value.trim();
+document.getElementById("messageError").innerHTML="";
 
-if(name==""){
+let name=document.getElementById("name").value.trim();
 
-alert("Please enter your name");
+let email=document.getElementById("email").value.trim();
 
-return;
+let phone=document.getElementById("phone").value.trim();
 
-}
+let message=document.getElementById("message").value.trim();
 
-if(email==""){
+let valid=true;
 
-alert("Please enter your email");
+if(name===""){
 
-return;
+document.getElementById("nameError").innerHTML="Name is required";
 
-}
-
-if(!email.includes("@")){
-
-alert("Please enter a valid email");
-
-return;
+valid=false;
 
 }
 
-if(phone==""){
+if(email===""){
 
-alert("Please enter your phone number");
+document.getElementById("emailError").innerHTML="Email is required";
 
-return;
+valid=false;
+
+}
+
+else if(!email.includes("@")){
+
+document.getElementById("emailError").innerHTML="Enter a valid email";
+
+valid=false;
 
 }
 
-if(message==""){
+if(phone===""){
 
-alert("Please enter your message");
+document.getElementById("phoneError").innerHTML="Phone number is required";
 
-return;
+valid=false;
 
 }
+
+if(message===""){
+
+document.getElementById("messageError").innerHTML="Please enter a message";
+
+valid=false;
+
+}
+
+if(valid){
 
 alert("Form submitted successfully!");
 
 document.getElementById("contactForm").reset();
 
-});
+}
+
+}
 
 </script>
 
 </body>
 </html>
+    
 
