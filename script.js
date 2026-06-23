@@ -2,7 +2,7 @@
 
 function showPopup(){
 
-    alert("Welcome to GlowUp Hair and Beauty!\nBook your appointment today.");
+    popup("Welcome to GlowUp Hair and Beauty!\nBook your appointment today.");
 
 }
 
