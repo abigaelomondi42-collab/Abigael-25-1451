@@ -3,49 +3,119 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Hair & Beauty Salon</title>
+<title>Student Registration Form</title>
+
+<style>
+    body{
+        font-family: Arial, sans-serif;
+        background-color: #f4f4f4;
+        margin:0;
+        padding:0;
+    }
+
+    .container{
+        width:400px;
+        margin:50px auto;
+        background:white;
+        padding:20px;
+        border-radius:10px;
+        box-shadow:0 0 10px gray;
+    }
+
+    h1{
+        text-align:center;
+        color:blue;
+    }
+
+    label{
+        display:block;
+        margin-top:10px;
+        font-weight:bold;
+    }
+
+    input[type="text"],
+    input[type="email"],
+    input[type="tel"]{
+        width:100%;
+        padding:10px;
+        margin-top:5px;
+        border:1px solid #ccc;
+        border-radius:5px;
+    }
+
+    .gender{
+        margin-top:10px;
+    }
+
+    button{
+        width:100%;
+        padding:10px;
+        margin-top:20px;
+        background:blue;
+        color:white;
+        border:none;
+        border-radius:5px;
+        cursor:pointer;
+    }
+
+    button:hover{
+        background:darkblue;
+    }
+</style>
 </head>
 
-<body id="body">
+<body onload="welcomeMessage()">
 
-<h1 id="title">Glow Hair & Beauty Salon</h1>
+<div class="container">
+    <h1>Student Registration Form</h1>
 
-<p>
-Welcome to Glow Hair & Beauty Salon. We offer braiding, hair styling,
-makeup, manicures, pedicures, and beauty treatments.
-</p>
+    <form id="registrationForm">
 
-<h2>Our Services</h2>
-<ul>
-<li>Braiding</li>
-<li>Hair Styling</li>
-<li>Makeup</li>
-<li>Manicure</li>
-<li>Pedicure</li>
-</ul>
+        <label>Name</label>
+        <input type="text" id="name" required>
 
-<h2>Gallery</h2>
-<img src="https://images.unsplash.com/photo-1562322140-8baeececf3df?w=400"
-alt="Hair Styling" width="300">
+        <label>Email</label>
+        <input type="email" id="email" placeholder="example@gmail.com" required>
 
-<h2>Contact Us</h2>
-<p>Phone: +254 700 123 456</p>
-<p>Email: glowbeauty@gmail.com</p>
+        <label>Phone Number</label>
+        <input type="tel" id="phone" required>
 
-<button onclick="changeStyle()">Change Style</button>
+        <label>Gender</label>
+
+        <div class="gender">
+            <input type="radio" name="gender" value="Male" required> Male
+            <input type="radio" name="gender" value="Female"> Female
+        </div>
+
+        <button type="submit">Submit</button>
+
+    </form>
+</div>
 
 <script>
-function changeStyle() {
-    document.getElementById("body").style.backgroundColor = "white";
-    document.getElementById("body").style.fontFamily = "Arial";
+function welcomeMessage() {
 
-    document.getElementById("title").style.color = "black";
-    document.getElementById("title").style.textAlign = "center";
-    document.getElementById("title").style.fontSize = "40px";
+    alert("Welcome to the Student Registration System!");
 
-    alert("Welcome to Glow Hair & Beauty Salon!");
+    let tuition = prompt("Enter your Tuition Fee:");
+
+    if(tuition !== null && tuition !== ""){
+        alert("Your Tuition Fee is: " + tuition);
+    }
+
+    alert("PROMO: Register today and get 10% Discount!");
 }
+
+document.getElementById("registrationForm")
+.addEventListener("submit", function(event){
+
+    event.preventDefault();
+
+    alert("Registration Submitted Successfully!");
+});
 </script>
 
 </body>
 </html>
+
+
