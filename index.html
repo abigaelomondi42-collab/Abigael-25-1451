@@ -1,14 +1,223 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GlowUp Hair and Beauty</title>
+    <style>
+        /* Base Page Styles */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+            color: #333;
+            background-color: #fdfaf7;
+        }
 
-<title>GlowUp Hair and Beauty</title>
+        header {
+            background: linear-gradient(135deg, #e83e8c, #fd7e14);
+            color: white;
+            text-align: center;
+            padding: 2.5rem 1rem;
+        }
 
-<link rel="stylesheet" href="style.css">
+        header h1 {
+            margin: 0;
+            font-size: 2.5rem;
+        }
+
+        nav {
+            background-color: #333;
+            display: flex;
+            justify-content: center;
+            padding: 0.8rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+            padding: 0.5rem 1.2rem;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        nav a:hover {
+            color: #fd7e14;
+        }
+
+        section {
+            max-width: 1000px;
+            margin: 2rem auto;
+            padding: 0 1.5rem;
+        }
+
+        h2 {
+            color: #e83e8c;
+            border-bottom: 2px solid #f8d7da;
+            padding-bottom: 0.5rem;
+        }
+
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1rem;
+        }
+
+        .service-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+            background: white;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        }
+
+        th, td {
+            padding: 0.8rem 1rem;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+
+        th {
+            background-color: #e83e8c;
+            color: white;
+        }
+
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+
+        .gallery-grid img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 8px;
+        }
+
+        .btn-primary {
+            background-color: #e83e8c;
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            font-size: 1rem;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn-primary:hover {
+            background-color: #d63384;
+        }
+
+        footer {
+            text-align: center;
+            padding: 1.5rem;
+            background-color: #333;
+            color: white;
+            margin-top: 3rem;
+        }
+
+        /* ========================================== */
+        /* POP-UP (MODAL) STYLES                     */
+        /* ========================================== */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.6);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+            z-index: 1000;
+        }
+
+        /* Show modal state */
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            max-width: 450px;
+            width: 90%;
+            position: relative;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            transform: translateY(-20px);
+            transition: transform 0.3s ease;
+            text-align: center;
+        }
+
+        .modal-overlay.active .modal-card {
+            transform: translateY(0);
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 12px;
+            right: 16px;
+            font-size: 1.8rem;
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: #888;
+            transition: color 0.2s;
+        }
+
+        .close-btn:hover {
+            color: #e83e8c;
+        }
+
+        .modal-card h3 {
+            margin-top: 0;
+            color: #e83e8c;
+            font-size: 1.6rem;
+        }
+
+        .modal-card p {
+            color: #666;
+            margin-bottom: 1.5rem;
+        }
+
+        .modal-form {
+            display: flex;
+            flex-direction: column;
+            gap: 0.8rem;
+        }
+
+        .modal-form input {
+            padding: 0.75rem;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 1rem;
+        }
+
+        .modal-form input:focus {
+            outline: 2px solid #e83e8c;
+            border-color: transparent;
+        }
+    </style>
 </head>
-
 <body>
 
 <header>
@@ -26,230 +235,151 @@
 
 <section id="home">
     <h2>Welcome to GlowUp Hair and Beauty</h2>
-
     <p>
-        GlowUp Hair and Beauty offers professional hair styling,
-        makeup, skincare, nail care and beauty treatments designed
-        to make every client look and feel their best.
+        GlowUp Hair and Beauty offers professional hair styling, makeup, skincare, nail care, and beauty treatments designed to make every client look and feel their best.
     </p>
-
-    <button onclick="showPopup()">Book Now</button>
+    <button class="btn-primary" onclick="openModal()">Book an Appointment</button>
 </section>
 
 <section id="about">
-
-<h2>About Us</h2>
-
-<p>
-Founded in 2015, GlowUp Hair and Beauty has grown into a trusted beauty brand offering affordable, high-quality services for all clients.
-</p>
-
+    <h2>About Us</h2>
+    <p>
+        Founded in 2015, GlowUp Hair and Beauty has grown into a trusted beauty brand offering affordable, high-quality services for all clients.
+    </p>
 </section>
 
 <section id="services">
+    <h2>Our Services</h2>
+    <div class="services-grid">
+        <div class="service-card">
+            <h3>Services Offered</h3>
+            <ul>
+                <li>Haircuts and Trims</li>
+                <li>Hair Coloring</li>
+                <li>Braiding and Protective Styles</li>
+                <li>Deep Conditioning Treatments</li>
+                <li>Facials and Skincare</li>
+                <li>Makeup Application</li>
+                <li>Manicure and Nail Care</li>
+            </ul>
+        </div>
+        <div class="service-card">
+            <h3>Why Choose Us?</h3>
+            <ul>
+                <li>Experienced Professionals</li>
+                <li>Affordable Prices</li>
+                <li>Quality Products</li>
+                <li>Friendly Environment</li>
+            </ul>
+        </div>
+    </div>
 
-<h2>Our Services</h2>
-
-<div class="list-box">
-
-<h3>Services Offered</h3>
-
-<ul>
-<li>Haircuts and Trims</li>
-<li>Hair Coloring</li>
-<li>Braiding and Protective Styles</li>
-<li>Deep Conditioning Treatments</li>
-<li>Facials and Skincare</li>
-<li>Makeup Application</li>
-<li>Manicure and Nail Care</li>
-
-</ul>
-
-</div>
-
-<div class="list-box">
-
-<h3>Why Choose Us?</h3>
-
-<ul>
-
-<li>Experienced Professionals</li>
-
-<li>Affordable Prices</li>
-
-<li>Quality Products</li>
-
-<li>Friendly Environment</li>
-
-</ul>
-
-</div>
-
-<h3>Booking Steps</h3>
-
-<ol>
-
-<li>Choose your service</li>
-
-<li>Select a date</li>
-
-<li>Contact us</li>
-
-<li>Confirm booking</li>
-
-<li>Visit salon</li>
-
-</ol>
-
+    <h3>Booking Steps</h3>
+    <ol>
+        <li>Choose your service</li>
+        <li>Select a date</li>
+        <li>Contact us</li>
+        <li>Confirm booking</li>
+        <li>Visit salon</li>
+    </ol>
 </section>
 
-<section>
-
-<h2>Price List</h2>
-
-<table>
-
-<tr>
-
-<th>Service</th>
-
-<th>Category</th>
-
-<th>Price (KES)</th>
-
-</tr>
-
-<tr>
-
-<td>Basic Haircut</td>
-
-<td>Hair</td>
-
-<td>1500</td>
-
-</tr>
-
-<tr>
-
-<td>Full Hair Color</td>
-
-<td>Hair</td>
-
-<td>8000</td>
-
-</tr>
-
-<tr>
-
-<td>Box Braids</td>
-
-<td>Braiding</td>
-
-<td>3000</td>
-
-</tr>
-
-<tr>
-
-<td>Deep Conditioning</td>
-
-<td>Treatment</td>
-
-<td>5000</td>
-
-</tr>
-
-<tr>
-
-<td>Full Face Makeup</td>
-
-<td>Makeup</td>
-
-<td>7000</td>
-
-</tr>
-
-<tr>
-
-<td>Classic Manicure</td>
-
-<td>Nails</td>
-
-<td>1000</td>
-
-</tr>
-
-</table>
-    <script>
-  window.onload = function() {
-    showPopup();
-  };
-</script>
-
+<section id="prices">
+    <h2>Price List</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Service</th>
+                <th>Category</th>
+                <th>Price (KES)</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr><td>Basic Haircut</td><td>Hair</td><td>1,500</td></tr>
+            <tr><td>Full Hair Color</td><td>Hair</td><td>8,000</td></tr>
+            <tr><td>Box Braids</td><td>Braiding</td><td>3,000</td></tr>
+            <tr><td>Deep Conditioning</td><td>Treatment</td><td>5,000</td></tr>
+            <tr><td>Full Face Makeup</td><td>Makeup</td><td>7,000</td></tr>
+            <tr><td>Classic Manicure</td><td>Nails</td><td>1,000</td></tr>
+        </tbody>
+    </table>
 </section>
 
 <section id="gallery">
-
-<h2>Gallery</h2>
-
-<div class="gallery-grid">
-
-<img src="https://images.unsplash.com/photo-1560066984-138dadb4c035?w=600"
-alt="Hair Styling">
-
-<img src="https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=600"
-alt="Beauty Products">
-
-<img src="https://images.unsplash.com/photo-1526045478516-99145907023c?w=600"
-alt="Salon Interior">
-
-<img src="https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=600"
-alt="Makeup Artist">
-
-<img src="https://images.unsplash.com/photo-1519699047748-de8e457a634e?w=600"
-alt="Hair Tools">
-
-</div>
-
+    <h2>Gallery</h2>
+    <div class="gallery-grid">
+        <img alt="Hair Styling" src="https://images.unsplash.com/photo-1560066984-138dadb4c035?w=600">
+        <img alt="Beauty Products" src="https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=600">
+        <img alt="Salon Interior" src="https://images.unsplash.com/photo-1526045478516-99145907023c?w=600">
+        <img alt="Makeup Artist" src="https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=600">
+        <img alt="Hair Tools" src="https://images.unsplash.com/photo-1519699047748-de8e457a634e?w=600">
+    </div>
 </section>
 
 <section id="contact">
-
-<h2>Contact Us</h2>
-
-<form id="contactForm">
-
-<label>Full Name</label>
-
-<input type="text" id="name">
-
-<label>Email</label>
-
-<input type="email" id="email">
-
-<label>Phone Number</label>
-
-<input type="text" id="phone">
-
-<label>Message</label>
-
-<textarea id="message"></textarea>
-
-<button type="submit">Send Message</button>
-
-</form>
-
+    <h2>Contact Us</h2>
+    <p>Reach out to us to schedule your session or inquire about custom services!</p>
 </section>
 
 <footer>
-
-<p>&copy; 2025 GlowUp Hair and Beauty</p>
-
+    <p>© 2025 GlowUp Hair and Beauty</p>
 </footer>
 
-<script src="script.js"></script>
-    
+<!-- POP-UP MODAL -->
+<div class="modal-overlay" id="bookingModal">
+    <div class="modal-card">
+        <button class="close-btn" onclick="closeModal()">&times;</button>
+        <h3>✨ Special Offer!</h3>
+        <p>Book your appointment today and get <strong>10% off</strong> your first service with us.</p>
+        <form class="modal-form" onsubmit="handleFormSubmit(event)">
+            <input type="text" placeholder="Your Name" required>
+            <input type="tel" placeholder="Phone Number" required>
+            <button type="submit" class="btn-primary">Claim Offer & Book</button>
+        </form>
+    </div>
+</div>
+
+<script>
+    const modal = document.getElementById('bookingModal');
+
+    // Open modal function
+    function openModal() {
+        modal.classList.add('active');
+    }
+
+    // Close modal function
+    function closeModal() {
+        modal.classList.remove('active');
+    }
+
+    // Automatically trigger pop-up after 3 seconds on page load
+    window.addEventListener('load', () => {
+        setTimeout(() => {
+            openModal();
+        }, 3000);
+    });
+
+    // Close modal when clicking outside of the white box
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) {
+            closeModal();
+        }
+    });
+
+    // Close on Escape key press
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+            closeModal();
+        }
+    });
+
+    // Form submission action
+    function handleFormSubmit(e) {
+        e.preventDefault();
+        alert('Thank you! We will reach out shortly to confirm your booking.');
+        closeModal();
+    }
+</script>
 
 </body>
-
 </html>
