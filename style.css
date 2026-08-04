@@ -1,121 +1,443 @@
-body{
-    font-family: Arial, sans-serif;
-    margin:0;
-    padding:0;
-    background:#f5e6ff;
-    color:#333;
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GlowUp Hair &amp; Beauty</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,500&family=Public+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<header class="hero" id="home">
+  <p class="eyebrow">Nairobi &middot; Est. 2015</p>
+  <h1>GlowUp Hair &amp; Beauty</h1>
+  <p>Hair, skin and nail care with a team that treats every chair like the good seat in the house.</p>
+  <button class="btn-primary" onclick="openAuthOrBooking()">Book an appointment</button>
+</header>
+
+<nav>
+  <a href="#home">Home</a>
+  <a href="#about">About</a>
+  <a href="#services">Services</a>
+  <a href="#prices">Prices</a>
+  <a href="#gallery">Gallery</a>
+  <a href="#contact">Contact</a>
+  <span class="nav-auth" id="navAuth">
+    <button class="navlink" onclick="openAuthModal('login')">Log in</button>
+    <button class="pill" onclick="openAuthModal('register')">Register</button>
+  </span>
+</nav>
+
+<div class="vanity-divider"><span></span><span></span><span></span><span></span><span></span></div>
+
+<section id="about">
+  <p class="eyebrow">About us</p>
+  <h2>A decade of good hair days</h2>
+  <p class="lead">Founded in 2015, GlowUp Hair and Beauty has grown into a trusted beauty brand offering affordable, high-quality services for every client who walks through the door.</p>
+</section>
+
+<section id="services">
+  <p class="eyebrow">What we do</p>
+  <h2>Our services</h2>
+  <div class="services-grid">
+    <div class="service-card">
+      <h3>Services offered</h3>
+      <ul>
+        <li>Haircuts and trims</li>
+        <li>Hair colouring</li>
+        <li>Braiding and protective styles</li>
+        <li>Deep conditioning treatments</li>
+        <li>Facials and skincare</li>
+        <li>Makeup application</li>
+        <li>Manicure and nail care</li>
+      </ul>
+    </div>
+    <div class="service-card">
+      <h3>Why choose us</h3>
+      <ul>
+        <li>Experienced professionals</li>
+        <li>Affordable prices</li>
+        <li>Quality products</li>
+        <li>Friendly environment</li>
+      </ul>
+    </div>
+  </div>
+
+  <h3 style="margin-top:2.4rem;">Booking steps</h3>
+  <ol class="steps">
+    <li>Create your account</li>
+    <li>Choose your service</li>
+    <li>Pick a date</li>
+    <li>Submit your request</li>
+    <li>We confirm and you visit the salon</li>
+  </ol>
+</section>
+
+<section id="prices">
+  <p class="eyebrow">Price list</p>
+  <h2>What it costs</h2>
+  <table id="priceTable">
+    <thead>
+      <tr><th>Service</th><th>Category</th><th>Price (KES)</th></tr>
+    </thead>
+    <tbody id="priceTableBody">
+      <tr><td colspan="3">Loading price list&hellip;</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section id="gallery">
+  <p class="eyebrow">Gallery</p>
+  <h2>A look inside</h2>
+  <div class="gallery-grid">
+    <img alt="Hair Styling" src="https://images.unsplash.com/photo-1560066984-138dadb4c035?w=600">
+    <img alt="Beauty Products" src="https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=600">
+    <img alt="Salon Interior" src="https://images.unsplash.com/photo-1526045478516-99145907023c?w=600">
+    <img alt="Makeup Artist" src="https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=600">
+    <img alt="Hair Tools" src="https://images.unsplash.com/photo-1519699047748-de8e457a634e?w=600">
+  </div>
+</section>
+
+<div class="vanity-divider"><span></span><span></span><span></span><span></span><span></span></div>
+
+<section id="booking">
+  <p class="eyebrow">Book a slot</p>
+  <h2>Reserve your appointment</h2>
+
+  <div id="bookingSignedOut" class="card">
+    <p>Log in or create an account to book an appointment and keep track of it.</p>
+    <button class="btn-primary" onclick="openAuthModal('register')">Create account</button>
+    <button class="btn-secondary" style="margin-left:.6rem;" onclick="openAuthModal('login')">Log in</button>
+  </div>
+
+  <form id="bookingForm" class="card" style="display:none;" onsubmit="return handleBookingSubmit(event)">
+    <div class="field">
+      <label for="bkService">Service</label>
+      <select id="bkService" required></select>
+    </div>
+    <div class="field">
+      <label for="bkDate">Preferred date</label>
+      <input type="date" id="bkDate" required>
+    </div>
+    <div class="field">
+      <label for="bkNotes">Notes (optional)</label>
+      <textarea id="bkNotes" rows="3" placeholder="Anything we should know?"></textarea>
+    </div>
+    <button type="submit" class="btn-primary">Request booking</button>
+    <p class="form-msg" id="bookingMsg"></p>
+  </form>
+
+  <div id="myBookings" style="display:none;">
+    <h3 style="margin-top:2.2rem;">Your bookings</h3>
+    <div class="bookings-list" id="bookingsList"></div>
+  </div>
+</section>
+
+<section id="contact">
+  <p class="eyebrow">Get in touch</p>
+  <h2>Contact us</h2>
+  <p class="lead">Reach out to us to schedule your session or inquire about custom services, or use the booking form above once you're logged in.</p>
+</section>
+
+<footer>
+  <p class="eyebrow">GlowUp Hair &amp; Beauty</p>
+  <p>&copy; 2025 GlowUp Hair and Beauty</p>
+</footer>
+
+<!-- ================= AUTH MODAL ================= -->
+<div class="modal-overlay" id="authModal">
+  <div class="modal-card">
+    <button class="close-btn" onclick="closeAuthModal()">&times;</button>
+    <div class="modal-tabs">
+      <button id="tabLogin" class="active" onclick="switchAuthTab('login')" type="button">Log in</button>
+      <button id="tabRegister" onclick="switchAuthTab('register')" type="button">Register</button>
+    </div>
+
+    <!-- Login -->
+    <div class="auth-panel active" id="panelLogin">
+      <h3>Welcome back</h3>
+      <form onsubmit="return handleLogin(event)">
+        <div class="field">
+          <label for="loginEmail">Email</label>
+          <input type="email" id="loginEmail" required>
+        </div>
+        <div class="field">
+          <label for="loginPassword">Password</label>
+          <input type="password" id="loginPassword" required minlength="6">
+        </div>
+        <button type="submit" class="btn-primary" style="width:100%;">Log in</button>
+        <p class="form-msg" id="loginMsg"></p>
+      </form>
+    </div>
+
+    <!-- Register -->
+    <div class="auth-panel" id="panelRegister">
+      <h3>Create your account</h3>
+      <form onsubmit="return handleRegister(event)">
+        <div class="field">
+          <label for="regName">Full name</label>
+          <input type="text" id="regName" required>
+        </div>
+        <div class="field">
+          <label for="regPhone">Phone number</label>
+          <input type="tel" id="regPhone" required>
+        </div>
+        <div class="field">
+          <label for="regEmail">Email</label>
+          <input type="email" id="regEmail" required>
+        </div>
+        <div class="field">
+          <label for="regPassword">Password</label>
+          <input type="password" id="regPassword" required minlength="6">
+        </div>
+        <button type="submit" class="btn-primary" style="width:100%;">Create account</button>
+        <p class="form-msg" id="registerMsg"></p>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script>
+/* =========================================================
+   SUPABASE CONFIG
+   Replace these two values with your own project's details:
+   Supabase Dashboard → Project Settings → API
+   ========================================================= */
+const SUPABASE_URL = "https://YOUR-PROJECT-REF.supabase.co";
+const SUPABASE_ANON_KEY = "YOUR-ANON-PUBLIC-KEY";
+
+const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+let currentUser = null;
+
+/* ---------------- auth modal controls ---------------- */
+const authModal = document.getElementById('authModal');
+
+function openAuthModal(tab){
+  switchAuthTab(tab || 'login');
+  authModal.classList.add('active');
+}
+function closeAuthModal(){
+  authModal.classList.remove('active');
+}
+function switchAuthTab(tab){
+  document.getElementById('tabLogin').classList.toggle('active', tab === 'login');
+  document.getElementById('tabRegister').classList.toggle('active', tab === 'register');
+  document.getElementById('panelLogin').classList.toggle('active', tab === 'login');
+  document.getElementById('panelRegister').classList.toggle('active', tab === 'register');
+}
+authModal.addEventListener('click', (e) => { if (e.target === authModal) closeAuthModal(); });
+document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeAuthModal(); });
+
+function openAuthOrBooking(){
+  if (currentUser) {
+    document.getElementById('booking').scrollIntoView({behavior:'smooth'});
+  } else {
+    openAuthModal('register');
+  }
 }
 
-header{
-    background:linear-gradient(135deg,purple,#a64ca6);
-    color:white;
-    text-align:center;
-    padding:25px;
+/* ---------------- register / login / logout ---------------- */
+async function handleRegister(e){
+  e.preventDefault();
+  const msg = document.getElementById('registerMsg');
+  msg.textContent = 'Creating your account…';
+  msg.className = 'form-msg';
+
+  const full_name = document.getElementById('regName').value.trim();
+  const phone = document.getElementById('regPhone').value.trim();
+  const email = document.getElementById('regEmail').value.trim();
+  const password = document.getElementById('regPassword').value;
+
+  const { data, error } = await supabase.auth.signUp({
+    email, password,
+    options: { data: { full_name, phone } }
+  });
+
+  if (error) {
+    msg.textContent = error.message;
+    msg.className = 'form-msg err';
+    return false;
+  }
+
+  if (data.session) {
+    // Email confirmation is off — user is already logged in.
+    msg.textContent = 'Account created! You are logged in.';
+    msg.className = 'form-msg ok';
+    setTimeout(closeAuthModal, 900);
+  } else {
+    msg.textContent = 'Account created! Check your email to confirm, then log in.';
+    msg.className = 'form-msg ok';
+  }
+  return false;
 }
 
-nav{
-    background:purple;
-    text-align:center;
-    padding:15px;
-    position:sticky;
-    top:0;
+async function handleLogin(e){
+  e.preventDefault();
+  const msg = document.getElementById('loginMsg');
+  msg.textContent = 'Logging in…';
+  msg.className = 'form-msg';
+
+  const email = document.getElementById('loginEmail').value.trim();
+  const password = document.getElementById('loginPassword').value;
+
+  const { error } = await supabase.auth.signInWithPassword({ email, password });
+
+  if (error) {
+    msg.textContent = error.message;
+    msg.className = 'form-msg err';
+    return false;
+  }
+  msg.textContent = 'Logged in!';
+  msg.className = 'form-msg ok';
+  setTimeout(closeAuthModal, 600);
+  return false;
 }
 
-nav a{
-    color:white;
-    text-decoration:none;
-    margin:15px;
-    font-weight:bold;
+async function handleLogout(){
+  await supabase.auth.signOut();
 }
 
-nav a:hover{
-    color:yellow;
+/* ---------------- reflect auth state in the UI ---------------- */
+function renderNavAuth(){
+  const el = document.getElementById('navAuth');
+  if (currentUser){
+    const label = currentUser.user_metadata?.full_name || currentUser.email;
+    el.innerHTML = `
+      <span class="who">Hi, ${escapeHtml(label)}</span>
+      <button class="navlink" onclick="document.getElementById('booking').scrollIntoView({behavior:'smooth'})">My bookings</button>
+      <button class="pill" onclick="handleLogout()">Log out</button>
+    `;
+  } else {
+    el.innerHTML = `
+      <button class="navlink" onclick="openAuthModal('login')">Log in</button>
+      <button class="pill" onclick="openAuthModal('register')">Register</button>
+    `;
+  }
 }
 
-section{
-    padding:25px;
-    max-width:1100px;
-    margin:auto;
+function renderBookingSection(){
+  document.getElementById('bookingSignedOut').style.display = currentUser ? 'none' : 'block';
+  document.getElementById('bookingForm').style.display = currentUser ? 'block' : 'none';
+  document.getElementById('myBookings').style.display = currentUser ? 'block' : 'none';
+  if (currentUser) loadMyBookings();
 }
 
-h2{
-    color:purple;
-    text-align:center;
+function escapeHtml(str){
+  return String(str).replace(/[&<>"']/g, (c) => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 }
 
-button{
-    background:purple;
-    color:white;
-    border:none;
-    padding:12px 20px;
-    border-radius:6px;
-    cursor:pointer;
+supabase.auth.onAuthStateChange((_event, session) => {
+  currentUser = session ? session.user : null;
+  renderNavAuth();
+  renderBookingSection();
+});
+
+/* ---------------- services / price list ---------------- */
+let servicesCache = [];
+
+async function loadServices(){
+  const { data, error } = await supabase
+    .from('services')
+    .select('*')
+    .order('sort_order', { ascending: true });
+
+  const tbody = document.getElementById('priceTableBody');
+  const select = document.getElementById('bkService');
+
+  if (error || !data || data.length === 0){
+    tbody.innerHTML = `<tr><td colspan="3">Price list unavailable — connect Supabase to load it.</td></tr>`;
+    return;
+  }
+
+  servicesCache = data;
+  tbody.innerHTML = data.map(s =>
+    `<tr><td>${escapeHtml(s.name)}</td><td>${escapeHtml(s.category)}</td><td>${Number(s.price_kes).toLocaleString()}</td></tr>`
+  ).join('');
+
+  select.innerHTML = data.map(s =>
+    `<option value="${s.id}">${escapeHtml(s.name)} — KES ${Number(s.price_kes).toLocaleString()}</option>`
+  ).join('');
 }
 
-button:hover{
-    background:#a64ca6;
+/* ---------------- bookings ---------------- */
+async function handleBookingSubmit(e){
+  e.preventDefault();
+  const msg = document.getElementById('bookingMsg');
+  if (!currentUser){
+    msg.textContent = 'Please log in first.';
+    msg.className = 'form-msg err';
+    return false;
+  }
+
+  const serviceId = document.getElementById('bkService').value;
+  const service = servicesCache.find(s => s.id === serviceId);
+  const date = document.getElementById('bkDate').value;
+  const notes = document.getElementById('bkNotes').value.trim();
+
+  msg.textContent = 'Sending your request…';
+  msg.className = 'form-msg';
+
+  const { error } = await supabase.from('bookings').insert({
+    user_id: currentUser.id,
+    service_name: service ? service.name : 'Unknown service',
+    price_kes: service ? service.price_kes : null,
+    preferred_date: date,
+    notes: notes || null
+  });
+
+  if (error){
+    msg.textContent = error.message;
+    msg.className = 'form-msg err';
+    return false;
+  }
+
+  msg.textContent = 'Booking requested! We will confirm shortly.';
+  msg.className = 'form-msg ok';
+  document.getElementById('bookingForm').reset();
+  loadMyBookings();
+  return false;
 }
 
-.list-box{
-    background:white;
-    padding:15px;
-    border-radius:10px;
-    margin-top:15px;
-    box-shadow:0 2px 8px rgba(0,0,0,0.1);
+async function loadMyBookings(){
+  const list = document.getElementById('bookingsList');
+  const { data, error } = await supabase
+    .from('bookings')
+    .select('*')
+    .order('created_at', { ascending: false });
+
+  if (error){
+    list.innerHTML = `<p class="empty-note">Could not load your bookings.</p>`;
+    return;
+  }
+  if (!data || data.length === 0){
+    list.innerHTML = `<p class="empty-note">No bookings yet — request one above.</p>`;
+    return;
+  }
+
+  list.innerHTML = data.map(b => `
+    <div class="booking-row">
+      <div>
+        <strong>${escapeHtml(b.service_name)}</strong>
+        <div class="meta">${b.preferred_date}${b.notes ? ' &middot; ' + escapeHtml(b.notes) : ''}</div>
+      </div>
+      <span class="status-tag ${b.status === 'cancelled' ? 'cancelled' : ''}">${escapeHtml(b.status)}</span>
+    </div>
+  `).join('');
 }
 
-table{
-    width:100%;
-    border-collapse:collapse;
-    background:white;
-}
+/* ---------------- init ---------------- */
+(async function init(){
+  const { data: { session } } = await supabase.auth.getSession();
+  currentUser = session ? session.user : null;
+  renderNavAuth();
+  renderBookingSection();
+  loadServices();
+})();
+</script>
 
-table th{
-    background:purple;
-    color:white;
-    padding:12px;
-}
-
-table td{
-    padding:10px;
-    text-align:center;
-}
-
-table tr:nth-child(even){
-    background:#e6ccff;
-}
-
-.gallery-grid{
-    display:grid;
-    grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
-    gap:20px;
-}
-
-.gallery-grid img{
-    width:100%;
-    height:250px;
-    object-fit:cover;
-    border-radius:12px;
-}
-
-form{
-    background:white;
-    padding:20px;
-    border-radius:10px;
-}
-
-input, textarea{
-    width:100%;
-    padding:10px;
-    margin-top:8px;
-    margin-bottom:15px;
-    border:1px solid #ccc;
-    border-radius:5px;
-}
-
-footer{
-    background:purple;
-    color:white;
-    text-align:center;
-    padding:15px;
-}
+</body>
+</html>
