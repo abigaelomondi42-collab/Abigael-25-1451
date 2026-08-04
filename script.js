@@ -1,108 +1,236 @@
--- =========================================================
--- GlowUp Hair & Beauty — Supabase schema
--- Run this once in your Supabase project's SQL Editor
--- (Project → SQL Editor → New query → paste → Run)
--- =========================================================
+/* =========================================================
+   SUPABASE CONFIG
+   Replace these two values with your own project's details:
+   Supabase Dashboard → Project Settings → API
+   ========================================================= */
+const SUPABASE_URL = "https://YOUR-PROJECT-REF.supabase.co";
+const SUPABASE_ANON_KEY = "YOUR-ANON-PUBLIC-KEY";
 
--- ---------------------------------------------------------
--- 1. PROFILES
--- Extends auth.users with the extra info we collect at
--- registration (full name, phone). auth.users itself is
--- managed by Supabase Auth — we never write to it directly.
--- ---------------------------------------------------------
-create table if not exists public.profiles (
-  id uuid references auth.users(id) on delete cascade primary key,
-  full_name text,
-  phone text,
-  created_at timestamptz default now()
-);
+const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-alter table public.profiles enable row level security;
+let currentUser = null;
 
-create policy "Users can view own profile"
-  on public.profiles for select
-  using (auth.uid() = id);
+/* ---------------- auth modal controls ---------------- */
+const authModal = document.getElementById('authModal');
 
-create policy "Users can update own profile"
-  on public.profiles for update
-  using (auth.uid() = id);
+function openAuthModal(tab){
+  switchAuthTab(tab || 'login');
+  authModal.classList.add('active');
+}
+function closeAuthModal(){
+  authModal.classList.remove('active');
+}
+function switchAuthTab(tab){
+  document.getElementById('tabLogin').classList.toggle('active', tab === 'login');
+  document.getElementById('tabRegister').classList.toggle('active', tab === 'register');
+  document.getElementById('panelLogin').classList.toggle('active', tab === 'login');
+  document.getElementById('panelRegister').classList.toggle('active', tab === 'register');
+}
+authModal.addEventListener('click', (e) => { if (e.target === authModal) closeAuthModal(); });
+document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeAuthModal(); });
 
-create policy "Users can insert own profile"
-  on public.profiles for insert
-  with check (auth.uid() = id);
+function openAuthOrBooking(){
+  if (currentUser) {
+    document.getElementById('booking').scrollIntoView({behavior:'smooth'});
+  } else {
+    openAuthModal('register');
+  }
+}
 
--- Auto-create a profile row the moment someone registers,
--- pulling full_name/phone out of the signup metadata.
-create or replace function public.handle_new_user()
-returns trigger as $$
-begin
-  insert into public.profiles (id, full_name, phone)
-  values (
-    new.id,
-    new.raw_user_meta_data ->> 'full_name',
-    new.raw_user_meta_data ->> 'phone'
-  );
-  return new;
-end;
-$$ language plpgsql security definer;
+/* ---------------- register / login / logout ---------------- */
+async function handleRegister(e){
+  e.preventDefault();
+  const msg = document.getElementById('registerMsg');
+  msg.textContent = 'Creating your account…';
+  msg.className = 'form-msg';
 
-drop trigger if exists on_auth_user_created on auth.users;
-create trigger on_auth_user_created
-  after insert on auth.users
-  for each row execute procedure public.handle_new_user();
+  const full_name = document.getElementById('regName').value.trim();
+  const phone = document.getElementById('regPhone').value.trim();
+  const email = document.getElementById('regEmail').value.trim();
+  const password = document.getElementById('regPassword').value;
 
--- ---------------------------------------------------------
--- 2. SERVICES
--- The price list, editable from the Supabase Table Editor
--- instead of hard-coded in the page.
--- ---------------------------------------------------------
-create table if not exists public.services (
-  id uuid default gen_random_uuid() primary key,
-  name text not null,
-  category text not null,
-  price_kes numeric not null,
-  sort_order int default 0
-);
+  const { data, error } = await supabase.auth.signUp({
+    email, password,
+    options: { data: { full_name, phone } }
+  });
 
-alter table public.services enable row level security;
+  if (error) {
+    msg.textContent = error.message;
+    msg.className = 'form-msg err';
+    return false;
+  }
 
-create policy "Anyone can view services"
-  on public.services for select
-  using (true);
+  if (data.session) {
+    // Email confirmation is off — user is already logged in.
+    msg.textContent = 'Account created! You are logged in.';
+    msg.className = 'form-msg ok';
+    setTimeout(closeAuthModal, 900);
+  } else {
+    msg.textContent = 'Account created! Check your email to confirm, then log in.';
+    msg.className = 'form-msg ok';
+  }
+  return false;
+}
 
-insert into public.services (name, category, price_kes, sort_order) values
-  ('Basic Haircut', 'Hair', 1500, 1),
-  ('Full Hair Color', 'Hair', 8000, 2),
-  ('Box Braids', 'Braiding', 3000, 3),
-  ('Deep Conditioning', 'Treatment', 5000, 4),
-  ('Full Face Makeup', 'Makeup', 7000, 5),
-  ('Classic Manicure', 'Nails', 1000, 6);
+async function handleLogin(e){
+  e.preventDefault();
+  const msg = document.getElementById('loginMsg');
+  msg.textContent = 'Logging in…';
+  msg.className = 'form-msg';
 
--- ---------------------------------------------------------
--- 3. BOOKINGS
--- Each row belongs to the signed-in user who made it.
--- ---------------------------------------------------------
-create table if not exists public.bookings (
-  id uuid default gen_random_uuid() primary key,
-  user_id uuid references auth.users(id) on delete cascade not null,
-  service_name text not null,
-  price_kes numeric,
-  preferred_date date not null,
-  notes text,
-  status text default 'pending',
-  created_at timestamptz default now()
-);
+  const email = document.getElementById('loginEmail').value.trim();
+  const password = document.getElementById('loginPassword').value;
 
-alter table public.bookings enable row level security;
+  const { error } = await supabase.auth.signInWithPassword({ email, password });
 
-create policy "Users can view own bookings"
-  on public.bookings for select
-  using (auth.uid() = user_id);
+  if (error) {
+    msg.textContent = error.message;
+    msg.className = 'form-msg err';
+    return false;
+  }
+  msg.textContent = 'Logged in!';
+  msg.className = 'form-msg ok';
+  setTimeout(closeAuthModal, 600);
+  return false;
+}
 
-create policy "Users can create own bookings"
-  on public.bookings for insert
-  with check (auth.uid() = user_id);
+async function handleLogout(){
+  await supabase.auth.signOut();
+}
 
-create policy "Users can cancel own bookings"
-  on public.bookings for update
-  using (auth.uid() = user_id);
+/* ---------------- reflect auth state in the UI ---------------- */
+function renderNavAuth(){
+  const el = document.getElementById('navAuth');
+  if (currentUser){
+    const label = currentUser.user_metadata?.full_name || currentUser.email;
+    el.innerHTML = `
+      <span class="who">Hi, ${escapeHtml(label)}</span>
+      <button class="navlink" onclick="document.getElementById('booking').scrollIntoView({behavior:'smooth'})">My bookings</button>
+      <button class="pill" onclick="handleLogout()">Log out</button>
+    `;
+  } else {
+    el.innerHTML = `
+      <button class="navlink" onclick="openAuthModal('login')">Log in</button>
+      <button class="pill" onclick="openAuthModal('register')">Register</button>
+    `;
+  }
+}
+
+function renderBookingSection(){
+  document.getElementById('bookingSignedOut').style.display = currentUser ? 'none' : 'block';
+  document.getElementById('bookingForm').style.display = currentUser ? 'block' : 'none';
+  document.getElementById('myBookings').style.display = currentUser ? 'block' : 'none';
+  if (currentUser) loadMyBookings();
+}
+
+function escapeHtml(str){
+  return String(str).replace(/[&<>"']/g, (c) => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+supabase.auth.onAuthStateChange((_event, session) => {
+  currentUser = session ? session.user : null;
+  renderNavAuth();
+  renderBookingSection();
+});
+
+/* ---------------- services / price list ---------------- */
+let servicesCache = [];
+
+async function loadServices(){
+  const { data, error } = await supabase
+    .from('services')
+    .select('*')
+    .order('sort_order', { ascending: true });
+
+  const tbody = document.getElementById('priceTableBody');
+  const select = document.getElementById('bkService');
+
+  if (error || !data || data.length === 0){
+    tbody.innerHTML = `<tr><td colspan="3">Price list unavailable — connect Supabase to load it.</td></tr>`;
+    return;
+  }
+
+  servicesCache = data;
+  tbody.innerHTML = data.map(s =>
+    `<tr><td>${escapeHtml(s.name)}</td><td>${escapeHtml(s.category)}</td><td>${Number(s.price_kes).toLocaleString()}</td></tr>`
+  ).join('');
+
+  select.innerHTML = data.map(s =>
+    `<option value="${s.id}">${escapeHtml(s.name)} — KES ${Number(s.price_kes).toLocaleString()}</option>`
+  ).join('');
+}
+
+/* ---------------- bookings ---------------- */
+async function handleBookingSubmit(e){
+  e.preventDefault();
+  const msg = document.getElementById('bookingMsg');
+  if (!currentUser){
+    msg.textContent = 'Please log in first.';
+    msg.className = 'form-msg err';
+    return false;
+  }
+
+  const serviceId = document.getElementById('bkService').value;
+  const service = servicesCache.find(s => s.id === serviceId);
+  const date = document.getElementById('bkDate').value;
+  const notes = document.getElementById('bkNotes').value.trim();
+
+  msg.textContent = 'Sending your request…';
+  msg.className = 'form-msg';
+
+  const { error } = await supabase.from('bookings').insert({
+    user_id: currentUser.id,
+    service_name: service ? service.name : 'Unknown service',
+    price_kes: service ? service.price_kes : null,
+    preferred_date: date,
+    notes: notes || null
+  });
+
+  if (error){
+    msg.textContent = error.message;
+    msg.className = 'form-msg err';
+    return false;
+  }
+
+  msg.textContent = 'Booking requested! We will confirm shortly.';
+  msg.className = 'form-msg ok';
+  document.getElementById('bookingForm').reset();
+  loadMyBookings();
+  return false;
+}
+
+async function loadMyBookings(){
+  const list = document.getElementById('bookingsList');
+  const { data, error } = await supabase
+    .from('bookings')
+    .select('*')
+    .order('created_at', { ascending: false });
+
+  if (error){
+    list.innerHTML = `<p class="empty-note">Could not load your bookings.</p>`;
+    return;
+  }
+  if (!data || data.length === 0){
+    list.innerHTML = `<p class="empty-note">No bookings yet — request one above.</p>`;
+    return;
+  }
+
+  list.innerHTML = data.map(b => `
+    <div class="booking-row">
+      <div>
+        <strong>${escapeHtml(b.service_name)}</strong>
+        <div class="meta">${b.preferred_date}${b.notes ? ' &middot; ' + escapeHtml(b.notes) : ''}</div>
+      </div>
+      <span class="status-tag ${b.status === 'cancelled' ? 'cancelled' : ''}">${escapeHtml(b.status)}</span>
+    </div>
+  `).join('');
+}
+
+/* ---------------- init ---------------- */
+(async function init(){
+  const { data: { session } } = await supabase.auth.getSession();
+  currentUser = session ? session.user : null;
+  renderNavAuth();
+  renderBookingSection();
+  loadServices();
+})();
