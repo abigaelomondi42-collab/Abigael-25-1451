@@ -1,127 +1,558 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GlowUp Hair & Beauty</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Glow Studio | Hair & Beauty</title>
+<style>
+  :root {
+    --cream: #fdf6f2;
+    --blush: #f3d9cf;
+    --rose: #b5674f;
+    --rose-dark: #7a4030;
+    --ink: #3d2b26;
+    --ink-soft: #6f5a53;
+    --gold: #c9a26a;
+  }
 
-    <link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@600;700&family=Public+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+  * { box-sizing: border-box; margin: 0; padding: 0; }
 
-    <link rel="stylesheet" href="style.css">
+  body {
+    font-family: Arial, Helvetica, sans-serif;
+    color: var(--ink);
+    background: var(--cream);
+    line-height: 1.6;
+  }
+
+  h1, h2, h3 {
+    font-family: Georgia, 'Times New Roman', serif;
+    font-weight: normal;
+    color: var(--ink);
+  }
+
+  a { text-decoration: none; color: inherit; }
+  img { max-width: 100%; display: block; }
+  section { padding: 80px 20px; }
+  .container { max-width: 1100px; margin: 0 auto; }
+
+  /* ---------- Nav ---------- */
+  header {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 500;
+    background: rgba(253, 246, 242, 0.92);
+    backdrop-filter: blur(6px);
+    border-bottom: 1px solid #ecdbd2;
+  }
+  nav {
+    max-width: 1100px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 20px;
+  }
+  .logo {
+    font-family: Georgia, serif;
+    font-size: 22px;
+    letter-spacing: 1px;
+    color: var(--rose-dark);
+  }
+  .nav-links {
+    display: flex;
+    gap: 28px;
+    list-style: none;
+    font-size: 14px;
+    letter-spacing: 0.5px;
+  }
+  .nav-links a:hover { color: var(--rose); }
+  .nav-toggle { display: none; background: none; border: none; font-size: 24px; cursor: pointer; color: var(--rose-dark); }
+
+  @media (max-width: 720px) {
+    .nav-links {
+      position: absolute;
+      top: 100%; left: 0; right: 0;
+      background: var(--cream);
+      flex-direction: column;
+      padding: 20px;
+      gap: 16px;
+      display: none;
+      border-bottom: 1px solid #ecdbd2;
+    }
+    .nav-links.open { display: flex; }
+    .nav-toggle { display: block; }
+  }
+
+  /* ---------- Hero ---------- */
+  #home {
+    padding-top: 160px;
+    text-align: center;
+    background: linear-gradient(180deg, var(--blush) 0%, var(--cream) 100%);
+  }
+  .eyebrow {
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    font-size: 12px;
+    color: var(--rose);
+    margin-bottom: 14px;
+  }
+  #home h1 {
+    font-size: clamp(34px, 6vw, 58px);
+    color: var(--rose-dark);
+    margin-bottom: 16px;
+  }
+  #home p.tagline {
+    max-width: 520px;
+    margin: 0 auto 30px;
+    color: var(--ink-soft);
+    font-size: 17px;
+  }
+  .btn {
+    display: inline-block;
+    padding: 14px 32px;
+    background: var(--rose);
+    color: #fff;
+    border-radius: 30px;
+    font-size: 15px;
+    letter-spacing: 0.5px;
+    border: none;
+    cursor: pointer;
+    transition: background 0.2s ease;
+  }
+  .btn:hover { background: var(--rose-dark); }
+  .btn.outline {
+    background: transparent;
+    border: 1px solid var(--rose);
+    color: var(--rose-dark);
+  }
+  .btn.outline:hover { background: var(--rose); color: #fff; }
+
+  /* ---------- About ---------- */
+  #about .container { display: flex; gap: 50px; flex-wrap: wrap; align-items: center; }
+  #about .about-text { flex: 1 1 320px; }
+  #about .about-img { flex: 1 1 320px; }
+  #about .about-img img { border-radius: 16px; }
+  .section-label {
+    font-size: 12px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--rose);
+    margin-bottom: 10px;
+  }
+  #about h2 { font-size: 32px; margin-bottom: 16px; }
+  #about p { color: var(--ink-soft); margin-bottom: 14px; }
+
+  /* ---------- Services ---------- */
+  #services { background: #fff; }
+  #services .heading, #gallery .heading, #contact .heading, #pricing .heading {
+    text-align: center;
+    max-width: 560px;
+    margin: 0 auto 50px;
+  }
+  #services .heading h2, #gallery .heading h2, #contact .heading h2, #pricing .heading h2 { font-size: 32px; margin-bottom: 10px; }
+  #services .heading p, #gallery .heading p, #contact .heading p, #pricing .heading p { color: var(--ink-soft); }
+
+  .service-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 26px;
+  }
+  .service-card {
+    background: var(--cream);
+    border: 1px solid #ecdbd2;
+    border-radius: 14px;
+    padding: 30px 24px;
+    text-align: center;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+  .service-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 14px 30px rgba(181, 103, 79, 0.15);
+  }
+  .service-card .icon { font-size: 30px; margin-bottom: 14px; }
+  .service-card h3 { font-size: 18px; margin-bottom: 8px; }
+  .service-card p { color: var(--ink-soft); font-size: 14px; }
+
+  /* ---------- Pricing ---------- */
+  table.price-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: #fff;
+    border-radius: 12px;
+    overflow: hidden;
+  }
+  table.price-table th, table.price-table td {
+    padding: 16px 18px;
+    text-align: left;
+    border-bottom: 1px solid #ecdbd2;
+    font-size: 15px;
+  }
+  table.price-table th {
+    background: var(--blush);
+    color: var(--rose-dark);
+    font-family: Georgia, serif;
+    font-weight: normal;
+    letter-spacing: 0.5px;
+  }
+  table.price-table tr:last-child td { border-bottom: none; }
+  table.price-table td.price { color: var(--rose); font-weight: bold; }
+
+  /* ---------- Gallery ---------- */
+  #gallery { background: var(--cream); }
+  .gallery-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 16px;
+  }
+  .gallery-grid img {
+    border-radius: 12px;
+    aspect-ratio: 1 / 1;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+  }
+  .gallery-grid img:hover { transform: scale(1.03); }
+
+  /* ---------- Contact ---------- */
+  #contact { background: #fff; }
+  .contact-wrap {
+    display: flex;
+    gap: 50px;
+    flex-wrap: wrap;
+  }
+  .contact-info { flex: 1 1 280px; }
+  .contact-info p { margin-bottom: 14px; color: var(--ink-soft); }
+  .contact-info strong { color: var(--ink); display: block; font-size: 13px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 3px; }
+
+  .contact-form { flex: 1 1 320px; display: flex; flex-direction: column; gap: 14px; }
+  .contact-form input, .contact-form textarea {
+    padding: 13px 16px;
+    border: 1px solid #e0c3b7;
+    border-radius: 8px;
+    font-size: 15px;
+    font-family: inherit;
+    outline: none;
+    background: var(--cream);
+    color: var(--ink);
+  }
+  .contact-form input:focus, .contact-form textarea:focus { border-color: var(--rose); }
+  .contact-form textarea { resize: vertical; min-height: 100px; }
+
+  /* ---------- Footer ---------- */
+  footer {
+    background: var(--rose-dark);
+    color: #f6e6df;
+    text-align: center;
+    padding: 40px 20px;
+    font-size: 13px;
+  }
+  footer .logo { color: #f6e6df; margin-bottom: 10px; font-size: 20px; }
+
+  /* ============ POPUP ============ */
+  #bp-overlay {
+    position: fixed; inset: 0;
+    background: rgba(30, 20, 20, 0.55);
+    backdrop-filter: blur(3px);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    opacity: 0;
+    transition: opacity 0.35s ease;
+    padding: 20px;
+  }
+  #bp-overlay.bp-show { display: flex; opacity: 1; }
+  #bp-card {
+    position: relative;
+    width: 100%;
+    max-width: 420px;
+    background: var(--cream);
+    border-radius: 18px;
+    padding: 40px 34px 34px;
+    text-align: center;
+    font-family: Georgia, serif;
+    box-shadow: 0 30px 60px rgba(0,0,0,0.25);
+    transform: translateY(20px) scale(0.96);
+    transition: transform 0.35s ease;
+  }
+  #bp-overlay.bp-show #bp-card { transform: translateY(0) scale(1); }
+  #bp-card::before {
+    content: "";
+    position: absolute;
+    top: 10px; left: 10px; right: 10px; bottom: 10px;
+    border: 1px solid #e3b8a8;
+    border-radius: 12px;
+    pointer-events: none;
+  }
+  #bp-close {
+    position: absolute; top: 12px; right: 14px;
+    background: none; border: none; font-size: 22px; line-height: 1;
+    color: #a97b6b; cursor: pointer; font-family: Arial, sans-serif;
+  }
+  #bp-close:hover { color: var(--rose-dark); }
+  #bp-eyebrow {
+    letter-spacing: 3px; text-transform: uppercase; font-size: 11px;
+    color: var(--rose); font-family: Arial, sans-serif; margin-bottom: 10px;
+  }
+  #bp-headline { font-size: 26px; margin: 0 0 10px; }
+  #bp-sub { font-size: 15px; color: var(--ink-soft); font-family: Arial, sans-serif; margin: 0 0 24px; }
+  #bp-form { display: flex; flex-direction: column; gap: 12px; }
+  #bp-email {
+    padding: 13px 16px; border: 1px solid #e0c3b7; border-radius: 8px;
+    font-size: 15px; font-family: Arial, sans-serif; outline: none; background: #fff; color: var(--ink);
+  }
+  #bp-email:focus { border-color: var(--rose); }
+  #bp-submit {
+    padding: 13px 16px; border: none; border-radius: 8px;
+    background: var(--rose); color: #fff; font-size: 15px;
+    font-family: Arial, sans-serif; letter-spacing: 0.5px; cursor: pointer;
+    transition: background 0.2s ease;
+  }
+  #bp-submit:hover { background: var(--rose-dark); }
+  #bp-fine { font-size: 11px; color: #a5928c; font-family: Arial, sans-serif; margin-top: 16px; }
+  #bp-success { display: none; font-family: Arial, sans-serif; color: var(--ink); font-size: 15px; padding: 10px 0 0; }
+  @media (max-width: 480px) {
+    #bp-card { padding: 32px 22px 26px; }
+    #bp-headline { font-size: 22px; }
+  }
+</style>
 </head>
-
 <body>
 
-<!-- POPUP -->
-<div class="popup" id="popup">
-    <div class="popup-box">
-
-        <button class="close-popup" onclick="closePopup()">&times;</button>
-
-        <span class="tag">✨ Studio Exclusive</span>
-
-        <h2>Get 15% OFF Your First Visit</h2>
-
-        <p>
-            Join the GlowUp community and receive exclusive discounts,
-            beauty tips and early appointment access.
-        </p>
-
-        <form id="popupForm">
-
-            <input
-                type="email"
-                placeholder="Enter your email"
-                required
-            >
-
-            <button type="submit">
-                Claim My Discount
-            </button>
-
-        </form>
-
-    </div>
-</div>
-
-<!-- HERO -->
-
-<header class="hero">
-
-<nav>
-
-<h2 class="logo">
-GlowUp
-</h2>
-
-<ul>
-
-<li><a href="#">Home</a></li>
-
-<li><a href="#">Services</a></li>
-
-<li><a href="#">Gallery</a></li>
-
-<li><a href="#">Booking</a></li>
-
-<li><a href="#">Contact</a></li>
-
-</ul>
-
-<a href="#" class="book-btn">
-Book Now
-</a>
-
-</nav>
-
-<div class="hero-content">
-
-<h1>
-Luxury Hair & Beauty Experience
-</h1>
-
-<p>
-
-From flawless installs and premium wigs to braids,
-lashes and professional beauty treatments—
-GlowUp is where confidence begins.
-
-</p>
-
-<div class="hero-buttons">
-
-<a href="#" class="primary-btn">
-Book Appointment
-</a>
-
-<a href="#" class="secondary-btn">
-View Services
-</a>
-
-</div>
-
-</div>
-
+<!-- ================= HEADER / NAV ================= -->
+<header>
+  <nav>
+    <a href="#home" class="logo">Glow Studio</a>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="#home">Home</a></li>
+      <li><a href="#about">About</a></li>
+      <li><a href="#services">Services</a></li>
+      <li><a href="#pricing">Pricing</a></li>
+      <li><a href="#gallery">Gallery</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+    <button class="nav-toggle" id="navToggle" aria-label="Toggle menu">&#9776;</button>
+  </nav>
 </header>
 
+<!-- ================= HERO ================= -->
+<section id="home">
+  <div class="eyebrow">Your Beauty Destination</div>
+  <h1>Look Good. Feel Radiant.</h1>
+  <p class="tagline">
+    Professional hair styling, makeup, skincare, and nail care —
+    tailored to make every client look and feel their best.
+  </p>
+  <a href="#contact" class="btn">Book an Appointment</a>
+</section>
+
+<!-- ================= ABOUT ================= -->
+<section id="about">
+  <div class="container">
+    <div class="about-text">
+      <div class="section-label">About Us</div>
+      <h2>Where Beauty Meets Care</h2>
+      <p>
+        Glow Studio has been serving clients with premium hair and beauty
+        treatments for years. We combine skilled hands, quality products,
+        and a warm environment to deliver results you'll love.
+      </p>
+      <p>
+        Our team stays on top of the latest trends and techniques so you
+        always leave looking your best.
+      </p>
+      <a href="#services" class="btn outline">Our Services</a>
+    </div>
+    <div class="about-img">
+      <img src="https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=700" alt="Salon interior" />
+    </div>
+  </div>
+</section>
+
+<!-- ================= SERVICES ================= -->
+<section id="services">
+  <div class="container">
+    <div class="heading">
+      <div class="section-label">What We Offer</div>
+      <h2>Our Services</h2>
+      <p>From everyday touch-ups to full transformations.</p>
+    </div>
+    <div class="service-grid">
+      <div class="service-card">
+        <div class="icon">💇‍♀️</div>
+        <h3>Haircuts & Styling</h3>
+        <p>Precision cuts and styles tailored to your look.</p>
+      </div>
+      <div class="service-card">
+        <div class="icon">🎨</div>
+        <h3>Hair Coloring</h3>
+        <p>Full color, highlights, and balayage services.</p>
+      </div>
+      <div class="service-card">
+        <div class="icon">💆‍♀️</div>
+        <h3>Braiding & Protective Styles</h3>
+        <p>Box braids, cornrows, and long-lasting styles.</p>
+      </div>
+      <div class="service-card">
+        <div class="icon">✨</div>
+        <h3>Facials & Skincare</h3>
+        <p>Deep cleansing and rejuvenating treatments.</p>
+      </div>
+      <div class="service-card">
+        <div class="icon">💄</div>
+        <h3>Makeup Application</h3>
+        <p>Everyday, event, and bridal makeup looks.</p>
+      </div>
+      <div class="service-card">
+        <div class="icon">💅</div>
+        <h3>Nail Care</h3>
+        <p>Manicures, pedicures, and nail art.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= PRICING ================= -->
+<section id="pricing">
+  <div class="container">
+    <div class="heading">
+      <div class="section-label">Price List</div>
+      <h2>Simple, Fair Pricing</h2>
+      <p>No hidden fees — know exactly what to expect.</p>
+    </div>
+    <table class="price-table">
+      <thead>
+        <tr>
+          <th>Service</th>
+          <th>Category</th>
+          <th>Price</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>Basic Haircut</td><td>Hair</td><td class="price">KES 1,500</td></tr>
+        <tr><td>Full Hair Color</td><td>Hair</td><td class="price">KES 8,000</td></tr>
+        <tr><td>Box Braids</td><td>Braiding</td><td class="price">KES 3,000</td></tr>
+        <tr><td>Deep Conditioning</td><td>Treatment</td><td class="price">KES 5,000</td></tr>
+        <tr><td>Full Face Makeup</td><td>Makeup</td><td class="price">KES 7,000</td></tr>
+        <tr><td>Classic Manicure</td><td>Nails</td><td class="price">KES 1,000</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ================= GALLERY ================= -->
+<section id="gallery">
+  <div class="container">
+    <div class="heading">
+      <div class="section-label">Gallery</div>
+      <h2>A Glimpse Inside Glow Studio</h2>
+    </div>
+    <div class="gallery-grid">
+      <img src="https://images.unsplash.com/photo-1560066984-138dadb4c035?w=500" alt="Hair styling" />
+      <img src="https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=500" alt="Salon interior" />
+      <img src="https://images.unsplash.com/photo-1526045478516-99145907023c?w=500" alt="Beauty products" />
+      <img src="https://images.unsplash.com/photo-1519699047748-de8e457a634e?w=500" alt="Hair tools" />
+      <img src="https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?w=500" alt="Makeup application" />
+      <img src="https://images.unsplash.com/photo-1487412947147-5cebf100ffc2?w=500" alt="Nail care" />
+    </div>
+  </div>
+</section>
+
+<!-- ================= CONTACT ================= -->
+<section id="contact">
+  <div class="container">
+    <div class="heading">
+      <div class="section-label">Get In Touch</div>
+      <h2>Book Your Appointment</h2>
+      <p>We'd love to have you visit — reach out anytime.</p>
+    </div>
+    <div class="contact-wrap">
+      <div class="contact-info">
+        <p><strong>Email</strong>hello@glowstudio.com</p>
+        <p><strong>Phone</strong>0780 055 557</p>
+        <p><strong>Address</strong>12 Beauty Lane, Nairobi</p>
+        <p><strong>Hours</strong>Tue – Sat, 9AM – 7PM</p>
+      </div>
+      <form class="contact-form" onsubmit="event.preventDefault(); alert('Thanks! We will get back to you soon.'); this.reset();">
+        <input type="text" placeholder="Full Name" required />
+        <input type="email" placeholder="Email Address" required />
+        <input type="tel" placeholder="Phone Number" />
+        <textarea placeholder="Tell us what you're looking for..."></textarea>
+        <button type="submit" class="btn">Send Message</button>
+      </form>
+    </div>
+  </div>
+</section>
+
+<!-- ================= FOOTER ================= -->
+<footer>
+  <div class="logo">Glow Studio</div>
+  <p>hello@glowstudio.com &nbsp;|&nbsp; 0780 055 557</p>
+  <p style="margin-top:10px;">© 2026 Glow Studio. All Rights Reserved.</p>
+</footer>
+
+<!-- ================= POPUP ================= -->
+<div id="bp-overlay">
+  <div id="bp-card" role="dialog" aria-modal="true" aria-labelledby="bp-headline">
+    <button id="bp-close" aria-label="Close popup">&times;</button>
+    <div id="bp-eyebrow">Studio Exclusive</div>
+    <h2 id="bp-headline">Get 15% Off Your First Visit</h2>
+    <p id="bp-sub">Join our list for early access to appointment slots, seasonal trends, and members-only offers.</p>
+    <form id="bp-form">
+      <input id="bp-email" type="email" placeholder="Your email address" required />
+      <button id="bp-submit" type="submit">Claim My 15% Off</button>
+    </form>
+    <div id="bp-success">🎉 You're on the list! Check your inbox for your discount code.</div>
+    <div id="bp-fine">No spam. Unsubscribe anytime.</div>
+  </div>
+</div>
+
 <script>
+  // Mobile nav toggle
+  document.getElementById("navToggle").addEventListener("click", function () {
+    document.getElementById("navLinks").classList.toggle("open");
+  });
+  document.querySelectorAll(".nav-links a").forEach(function (link) {
+    link.addEventListener("click", function () {
+      document.getElementById("navLinks").classList.remove("open");
+    });
+  });
 
-window.onload = function(){
+  // Popup logic
+  (function () {
+    var STORAGE_KEY = "bpPopupLastShown";
+    var SHOW_AFTER_MS = 4000;
+    var HOURS_BEFORE_REPEAT = 24;
 
-setTimeout(function(){
+    var overlay = document.getElementById("bp-overlay");
+    var closeBtn = document.getElementById("bp-close");
+    var form = document.getElementById("bp-form");
+    var successMsg = document.getElementById("bp-success");
 
-document.getElementById("popup").classList.add("show");
+    function shouldShow() {
+      var last = localStorage.getItem(STORAGE_KEY);
+      if (!last) return true;
+      var hoursSince = (Date.now() - parseInt(last, 10)) / 36e5;
+      return hoursSince >= HOURS_BEFORE_REPEAT;
+    }
+    function openPopup() {
+      overlay.classList.add("bp-show");
+      localStorage.setItem(STORAGE_KEY, Date.now().toString());
+    }
+    function closePopup() { overlay.classList.remove("bp-show"); }
 
-},1000);
+    if (shouldShow()) setTimeout(openPopup, SHOW_AFTER_MS);
 
-}
+    closeBtn.addEventListener("click", closePopup);
+    overlay.addEventListener("click", function (e) { if (e.target === overlay) closePopup(); });
+    document.addEventListener("keydown", function (e) { if (e.key === "Escape") closePopup(); });
 
-function closePopup(){
-
-document.getElementById("popup").classList.remove("show");
-
-}
-
+    form.addEventListener("submit", function (e) {
+      e.preventDefault();
+      form.style.display = "none";
+      successMsg.style.display = "block";
+      setTimeout(closePopup, 3000);
+    });
+  })();
 </script>
 
 </body>
