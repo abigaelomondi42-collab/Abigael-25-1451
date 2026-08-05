@@ -1,230 +1,128 @@
-<!-- ============================================================
-  Hair & Beauty Website Popup
-  ------------------------------------------------------------
-  How to use:
-  1. Paste this entire block just before the closing </body> tag
-     of your website.
-  2. Edit the text inside the HTML section (headline, offer,
-     button) to match your salon/brand.
-  3. The popup auto-opens after 4 seconds and only shows once
-     per visitor per day (using localStorage). Adjust timing
-     and frequency in the JS section below.
-============================================================= -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GlowUp Hair & Beauty</title>
 
-<style>
-  #bp-overlay {
-    position: fixed;
-    inset: 0;
-    background: rgba(30, 20, 20, 0.55);
-    backdrop-filter: blur(3px);
-    display: none;
-    align-items: center;
-    justify-content: center;
-    z-index: 9999;
-    opacity: 0;
-    transition: opacity 0.35s ease;
-    padding: 20px;
-  }
-  #bp-overlay.bp-show {
-    display: flex;
-    opacity: 1;
-  }
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@600;700&family=Public+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 
-  #bp-card {
-    position: relative;
-    width: 100%;
-    max-width: 420px;
-    background: #fdf6f2;
-    border-radius: 18px;
-    padding: 40px 34px 34px;
-    text-align: center;
-    font-family: 'Georgia', 'Times New Roman', serif;
-    box-shadow: 0 30px 60px rgba(0,0,0,0.25);
-    transform: translateY(20px) scale(0.96);
-    transition: transform 0.35s ease;
-  }
-  #bp-overlay.bp-show #bp-card {
-    transform: translateY(0) scale(1);
-  }
+    <link rel="stylesheet" href="style.css">
+</head>
 
-  #bp-card::before {
-    content: "";
-    position: absolute;
-    top: 10px; left: 10px; right: 10px; bottom: 10px;
-    border: 1px solid #e3b8a8;
-    border-radius: 12px;
-    pointer-events: none;
-  }
+<body>
 
-  #bp-close {
-    position: absolute;
-    top: 12px;
-    right: 14px;
-    background: none;
-    border: none;
-    font-size: 22px;
-    line-height: 1;
-    color: #a97b6b;
-    cursor: pointer;
-    font-family: Arial, sans-serif;
-  }
-  #bp-close:hover { color: #7a4f42; }
+<!-- POPUP -->
+<div class="popup" id="popup">
+    <div class="popup-box">
 
-  #bp-eyebrow {
-    letter-spacing: 3px;
-    text-transform: uppercase;
-    font-size: 11px;
-    color: #c08a6f;
-    font-family: Arial, sans-serif;
-    margin-bottom: 10px;
-  }
+        <button class="close-popup" onclick="closePopup()">&times;</button>
 
-  #bp-headline {
-    font-size: 28px;
-    color: #3d2b26;
-    margin: 0 0 10px;
-    font-weight: normal;
-  }
+        <span class="tag">✨ Studio Exclusive</span>
 
-  #bp-sub {
-    font-size: 15px;
-    color: #6f5a53;
-    font-family: Arial, sans-serif;
-    line-height: 1.5;
-    margin: 0 0 24px;
-  }
+        <h2>Get 15% OFF Your First Visit</h2>
 
-  #bp-form {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-  }
+        <p>
+            Join the GlowUp community and receive exclusive discounts,
+            beauty tips and early appointment access.
+        </p>
 
-  #bp-email {
-    padding: 13px 16px;
-    border: 1px solid #e0c3b7;
-    border-radius: 8px;
-    font-size: 15px;
-    font-family: Arial, sans-serif;
-    outline: none;
-    background: #fff;
-    color: #3d2b26;
-  }
-  #bp-email:focus {
-    border-color: #c08a6f;
-  }
+        <form id="popupForm">
 
-  #bp-submit {
-    padding: 13px 16px;
-    border: none;
-    border-radius: 8px;
-    background: #b5674f;
-    color: #fff;
-    font-size: 15px;
-    font-family: Arial, sans-serif;
-    letter-spacing: 0.5px;
-    cursor: pointer;
-    transition: background 0.2s ease;
-  }
-  #bp-submit:hover { background: #9c5540; }
+            <input
+                type="email"
+                placeholder="Enter your email"
+                required
+            >
 
-  #bp-fine {
-    font-size: 11px;
-    color: #a5928c;
-    font-family: Arial, sans-serif;
-    margin-top: 16px;
-  }
+            <button type="submit">
+                Claim My Discount
+            </button>
 
-  #bp-success {
-    display: none;
-    font-family: Arial, sans-serif;
-    color: #3d2b26;
-    font-size: 15px;
-    padding: 10px 0 0;
-  }
+        </form>
 
-  @media (max-width: 480px) {
-    #bp-card { padding: 32px 22px 26px; }
-    #bp-headline { font-size: 24px; }
-  }
-</style>
-
-<div id="bp-overlay">
-  <div id="bp-card" role="dialog" aria-modal="true" aria-labelledby="bp-headline">
-    <button id="bp-close" aria-label="Close popup">&times;</button>
-
-    <div id="bp-eyebrow">Studio Exclusive</div>
-    <h2 id="bp-headline">Get 15% Off Your First Visit</h2>
-    <p id="bp-sub">
-      Join our list for early access to appointment slots,
-      seasonal color trends, and members-only offers.
-    </p>
-
-    <form id="bp-form">
-      <input
-        id="bp-email"
-        type="email"
-        placeholder="Your email address"
-        required
-      />
-      <button id="bp-submit" type="submit">Claim My 15% Off</button>
-    </form>
-
-    <div id="bp-success">
-      🎉 You're on the list! Check your inbox for your discount code.
     </div>
-
-    <div id="bp-fine">No spam. Unsubscribe anytime.</div>
-  </div>
 </div>
 
+<!-- HERO -->
+
+<header class="hero">
+
+<nav>
+
+<h2 class="logo">
+GlowUp
+</h2>
+
+<ul>
+
+<li><a href="#">Home</a></li>
+
+<li><a href="#">Services</a></li>
+
+<li><a href="#">Gallery</a></li>
+
+<li><a href="#">Booking</a></li>
+
+<li><a href="#">Contact</a></li>
+
+</ul>
+
+<a href="#" class="book-btn">
+Book Now
+</a>
+
+</nav>
+
+<div class="hero-content">
+
+<h1>
+Luxury Hair & Beauty Experience
+</h1>
+
+<p>
+
+From flawless installs and premium wigs to braids,
+lashes and professional beauty treatments—
+GlowUp is where confidence begins.
+
+</p>
+
+<div class="hero-buttons">
+
+<a href="#" class="primary-btn">
+Book Appointment
+</a>
+
+<a href="#" class="secondary-btn">
+View Services
+</a>
+
+</div>
+
+</div>
+
+</header>
+
 <script>
-  (function () {
-    var STORAGE_KEY = "bpPopupLastShown";
-    var SHOW_AFTER_MS = 4000;       // delay before popup appears
-    var HOURS_BEFORE_REPEAT = 24;   // don't re-show within this window
 
-    var overlay = document.getElementById("bp-overlay");
-    var closeBtn = document.getElementById("bp-close");
-    var form = document.getElementById("bp-form");
-    var successMsg = document.getElementById("bp-success");
+window.onload = function(){
 
-    function shouldShow() {
-      var last = localStorage.getItem(STORAGE_KEY);
-      if (!last) return true;
-      var hoursSince = (Date.now() - parseInt(last, 10)) / 36e5;
-      return hoursSince >= HOURS_BEFORE_REPEAT;
-    }
+setTimeout(function(){
 
-    function openPopup() {
-      overlay.classList.add("bp-show");
-      localStorage.setItem(STORAGE_KEY, Date.now().toString());
-    }
+document.getElementById("popup").classList.add("show");
 
-    function closePopup() {
-      overlay.classList.remove("bp-show");
-    }
+},1000);
 
-    if (shouldShow()) {
-      setTimeout(openPopup, SHOW_AFTER_MS);
-    }
+}
 
-    closeBtn.addEventListener("click", closePopup);
-    overlay.addEventListener("click", function (e) {
-      if (e.target === overlay) closePopup();
-    });
-    document.addEventListener("keydown", function (e) {
-      if (e.key === "Escape") closePopup();
-    });
+function closePopup(){
 
-    form.addEventListener("submit", function (e) {
-      e.preventDefault();
-      // ---- Replace this with your real signup logic ----
-      // e.g. send to Mailchimp / Klaviyo / your backend via fetch()
-      // ----------------------------------------------------
-      form.style.display = "none";
-      successMsg.style.display = "block";
-      setTimeout(closePopup, 3000);
-    });
-  })();
+document.getElementById("popup").classList.remove("show");
+
+}
+
 </script>
+
+</body>
+</html>
