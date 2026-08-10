@@ -632,17 +632,20 @@
                     // Check if Supabase rejected it
                     if (!response.ok) {
 
-                        const error =
-                            await response.json();
+    const errorText = await response.text();
 
-                        console.error(
-                            "Supabase error:",
-                            error
-                        );
+    console.error("Supabase error:", errorText);
 
-                        throw new Error(
-                            error.message ||
-                            "Booking could not be submitted."
+    statusMessage.textContent =
+        "Supabase error: " + errorText;
+
+    statusMessage.style.color = "red";
+
+    submitButton.disabled = false;
+    submitButton.textContent = "Send Message";
+
+    return;
+}
                         );
 
                     }
