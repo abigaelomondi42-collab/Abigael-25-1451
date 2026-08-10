@@ -162,12 +162,13 @@
         <p><strong>Address</strong>12 Beauty Lane, Nairobi</p>
         <p><strong>Hours</strong>Tue – Sat, 9AM – 7PM</p>
       </div>
-      <form class="contact-form">
-        <input type="text" placeholder="Full Name" required />
-        <input type="email" placeholder="Email Address" required />
-        <input type="tel" placeholder="Phone Number" />
-        <textarea placeholder="Tell us what you're looking for..."></textarea>
-        <button type="submit" class="btn">Send Message</button>
+      <form class="contact-form" id="contactForm">
+        <input type="text" id="cf-name" name="name" placeholder="Full Name" required />
+        <input type="email" id="cf-email" name="email" placeholder="Email Address" required />
+        <input type="tel" id="cf-phone" name="phone" placeholder="Phone Number" />
+        <textarea id="cf-message" name="message" placeholder="Tell us what you're looking for..."></textarea>
+        <button type="submit" class="btn" id="cf-submit">Send Message</button>
+        <p id="cf-status" style="margin-top:10px;font-size:0.9rem;"></p>
       </form>
     </div>
   </div>
@@ -175,28 +176,4 @@
 
 <!-- ================= FOOTER ================= -->
 <footer>
-  <div class="logo">Glow Studio</div>
-  <p>hello@glowstudio.com &nbsp;|&nbsp; 0780 055 557</p>
-  <p style="margin-top:10px;">© 2026 Glow Studio. All Rights Reserved.</p>
-</footer>
-
-<!-- ================= POPUP ================= -->
-<div id="bp-overlay">
-  <div id="bp-card" role="dialog" aria-modal="true" aria-labelledby="bp-headline">
-    <button id="bp-close" aria-label="Close popup">&times;</button>
-    <div id="bp-eyebrow">Studio Exclusive</div>
-    <h2 id="bp-headline">Get 15% Off Your First Visit</h2>
-    <p id="bp-sub">Join our list for early access to appointment slots, seasonal trends, and members-only offers.</p>
-    <form id="bp-form">
-      <input id="bp-email" type="email" placeholder="Your email address" required />
-      <button id="bp-submit" type="submit">Claim My 15% Off</button>
-    </form>
-    <div id="bp-success">🎉 You're on the list! Check your inbox for your discount code.</div>
-    <div id="bp-fine">No spam. Unsubscribe anytime.</div>
-  </div>
-</div>
-
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-   <script src="script.js"></script>
-</body>
-</html>
+  <div
