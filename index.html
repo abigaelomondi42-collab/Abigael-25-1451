@@ -629,12 +629,12 @@
                         );
 
 
-                    // Check if Supabase rejected it
-                    if (!response.ok) {
+                  // Check if Supabase rejected it
+if (!response.ok) {
 
     const errorText = await response.text();
 
-    console.error("Supabase error:", errorText);
+    console.error("SUPABASE ERROR:", errorText);
 
     statusMessage.textContent =
         "Supabase error: " + errorText;
@@ -646,6 +646,7 @@
 
     return;
 }
+
                         );
 
                     }
@@ -662,17 +663,16 @@
                     contactForm.reset();
 
 
-                } catch (error) {
+              } catch (error) {
 
-                    console.error(error);
+    console.error("FULL ERROR:", error);
 
+    statusMessage.textContent =
+        "ERROR: " + error.message;
 
-                    statusMessage.textContent =
-                        "Something went wrong. Please try again.";
+    statusMessage.style.color = "red";
 
-                    statusMessage.style.color = "red";
-
-                }
+}
 
 
                 // Restore button
