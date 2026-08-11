@@ -89,45 +89,10 @@ if (navToggle && navLinks) {
     const SHOW_AFTER_MS = 1000;
 
 
-    // Popup can show again after 24 hours
-    const HOURS_BEFORE_REPEAT = 24;
-
-
-    const STORAGE_KEY =
-        "bpPopupLastShown";
-
-
-    // Check whether popup should appear
-    function shouldShow() {
-
-        const last =
-            localStorage.getItem(STORAGE_KEY);
-
-        if (!last) {
-
-            return true;
-
-        }
-
-
-        const hoursSince =
-            (Date.now() - parseInt(last, 10)) / 36e5;
-
-
-        return hoursSince >= HOURS_BEFORE_REPEAT;
-
-    }
-
-
     // Open popup
     function openPopup() {
 
         overlay.classList.add("bp-show");
-
-        localStorage.setItem(
-            STORAGE_KEY,
-            Date.now().toString()
-        );
 
     }
 
@@ -140,15 +105,11 @@ if (navToggle && navLinks) {
     }
 
 
-    // Show popup
-    if (shouldShow()) {
-
-        setTimeout(
-            openPopup,
-            SHOW_AFTER_MS
-        );
-
-    }
+    // Show popup every visit
+    setTimeout(
+        openPopup,
+        SHOW_AFTER_MS
+    );
 
 
     // Close button
