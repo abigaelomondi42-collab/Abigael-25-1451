@@ -2,104 +2,436 @@
 // Glow Studio - Hair & Beauty Website Scripts
 // ============================================================
 
-// ---------- Supabase setup ----------
-// 1. Go to your Supabase project -> Settings -> API
-// 2. Copy your "Project URL" and paste it below as SUPABASE_URL
-// 3. Copy your "anon public" key and paste it below as SUPABASE_KEY
-const SUPABASE_URL = "https://uorcfjunftdmawcbunrs.supabase.co";
-const SUPABASE_KEY = "sb_publishable_tzseDjtjFzCZOB6Zw044ng_XyDpi_R2";
 
-const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+// ============================================================
+// SUPABASE SETUP
+// ============================================================
 
-// ---------- Mobile nav toggle ----------
-document.getElementById("navToggle").addEventListener("click", function () {
-  document.getElementById("navLinks").classList.toggle("open");
-});
+const SUPABASE_URL =
+    "https://uorcfjunftdmawcbunrs.supabase.co";
 
-document.querySelectorAll(".nav-links a").forEach(function (link) {
-  link.addEventListener("click", function () {
-    document.getElementById("navLinks").classList.remove("open");
-  });
-});
+const SUPABASE_KEY =
+    "sb_publishable_tzseDjtjFzCZOB6Zw044ng_XyDpi_R2";
 
-// ---------- Popup logic ----------
+const supabaseClient =
+    window.supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_KEY
+    );
+
+
+// ============================================================
+// MOBILE NAVIGATION
+// ============================================================
+
+const navToggle =
+    document.getElementById("navToggle");
+
+const navLinks =
+    document.getElementById("navLinks");
+
+if (navToggle && navLinks) {
+
+    navToggle.addEventListener("click", function () {
+
+        navLinks.classList.toggle("open");
+
+    });
+
+
+    document
+        .querySelectorAll(".nav-links a")
+        .forEach(function (link) {
+
+            link.addEventListener("click", function () {
+
+                navLinks.classList.remove("open");
+
+            });
+
+        });
+
+}
+
+
+// ============================================================
+// POPUP
+// ============================================================
+
 (function () {
-  var STORAGE_KEY = "bpPopupLastShown";
-  var SHOW_AFTER_MS = 4000;       // delay before popup appears
-  var HOURS_BEFORE_REPEAT = 24;   // don't re-show within this window
 
-  var overlay = document.getElementById("bp-overlay");
-  var closeBtn = document.getElementById("bp-close");
-  var form = document.getElementById("bp-form");
-  var successMsg = document.getElementById("bp-success");
+    const overlay =
+        document.getElementById("bp-overlay");
 
-  function shouldShow() {
-    var last = localStorage.getItem(STORAGE_KEY);
-    if (!last) return true;
-    var hoursSince = (Date.now() - parseInt(last, 10)) / 36e5;
-    return hoursSince >= HOURS_BEFORE_REPEAT;
-  }
+    const closeBtn =
+        document.getElementById("bp-close");
 
-  function openPopup() {
-    overlay.classList.add("bp-show");
-    localStorage.setItem(STORAGE_KEY, Date.now().toString());
-  }
+    const form =
+        document.getElementById("bp-form");
 
-  function closePopup() {
-    overlay.classList.remove("bp-show");
-  }
+    const successMsg =
+        document.getElementById("bp-success");
 
-  if (shouldShow()) {
-    setTimeout(openPopup, SHOW_AFTER_MS);
-  }
 
-  closeBtn.addEventListener("click", closePopup);
-  overlay.addEventListener("click", function (e) {
-    if (e.target === overlay) closePopup();
-  });
-  document.addEventListener("keydown", function (e) {
-    if (e.key === "Escape") closePopup();
-  });
+    // Stop if popup HTML is missing
+    if (!overlay || !closeBtn || !form) {
 
-  form.addEventListener("submit", async function (e) {
-    e.preventDefault();
-    var email = document.getElementById("bp-email").value;
+        console.error(
+            "Popup HTML is missing from index.html"
+        );
 
-    var { error } = await supabaseClient
-      .from("popup_signups")
-      .insert([{ email: email }]);
+        return;
 
-    if (error) {
-      console.error("Supabase error:", error);
-      alert("Something went wrong. Please try again.");
-      return;
     }
 
-    form.style.display = "none";
-    successMsg.style.display = "block";
-    setTimeout(closePopup, 3000);
-  });
+
+    // Popup appears after 1 second
+    const SHOW_AFTER_MS = 1000;
+
+
+    // Popup can show again after 24 hours
+    const HOURS_BEFORE_REPEAT = 24;
+
+
+    const STORAGE_KEY =
+        "bpPopupLastShown";
+
+
+    // Check whether popup should appear
+    function shouldShow() {
+
+        const last =
+            localStorage.getItem(STORAGE_KEY);
+
+        if (!last) {
+
+            return true;
+
+        }
+
+
+        const hoursSince =
+            (Date.now() - parseInt(last, 10)) / 36e5;
+
+
+        return hoursSince >= HOURS_BEFORE_REPEAT;
+
+    }
+
+
+    // Open popup
+    function openPopup() {
+
+        overlay.classList.add("bp-show");
+
+        localStorage.setItem(
+            STORAGE_KEY,
+            Date.now().toString()
+        );
+
+    }
+
+
+    // Close popup
+    function closePopup() {
+
+        overlay.classList.remove("bp-show");
+
+    }
+
+
+    // Show popup
+    if (shouldShow()) {
+
+        setTimeout(
+            openPopup,
+            SHOW_AFTER_MS
+        );
+
+    }
+
+
+    // Close button
+    closeBtn.addEventListener(
+        "click",
+        closePopup
+    );
+
+
+    // Close when clicking outside
+    overlay.addEventListener(
+        "click",
+        function (event) {
+
+            if (
+                event.target === overlay
+            ) {
+
+                closePopup();
+
+            }
+
+        }
+    );
+
+
+    // Close with Escape key
+    document.addEventListener(
+        "keydown",
+        function (event) {
+
+            if (event.key === "Escape") {
+
+                closePopup();
+
+            }
+
+        }
+    );
+
+
+    // Popup email form
+    form.addEventListener(
+        "submit",
+        async function (event) {
+
+            event.preventDefault();
+
+
+            const email =
+                document
+                    .getElementById("bp-email")
+                    .value
+                    .trim();
+
+
+            if (!email) {
+
+                return;
+
+            }
+
+
+            const submitButton =
+                document.getElementById(
+                    "bp-submit"
+                );
+
+
+            submitButton.disabled = true;
+
+            submitButton.textContent =
+                "Submitting...";
+
+
+            try {
+
+                const { error } =
+                    await supabaseClient
+                        .from("popup_signups")
+                        .insert([
+                            {
+                                email: email
+                            }
+                        ]);
+
+
+                if (error) {
+
+                    console.error(
+                        "Popup Supabase error:",
+                        error
+                    );
+
+                    alert(
+                        "Something went wrong. Please try again."
+                    );
+
+                    submitButton.disabled = false;
+
+                    submitButton.textContent =
+                        "Book an Appointment";
+
+                    return;
+
+                }
+
+
+                // Hide form
+                form.style.display = "none";
+
+
+                // Show success message
+                if (successMsg) {
+
+                    successMsg.style.display =
+                        "block";
+
+                }
+
+
+                // Close after 3 seconds
+                setTimeout(
+                    closePopup,
+                    3000
+                );
+
+
+            } catch (error) {
+
+                console.error(
+                    "Popup error:",
+                    error
+                );
+
+                alert(
+                    "Something went wrong. Please try again."
+                );
+
+
+                submitButton.disabled = false;
+
+                submitButton.textContent =
+                    "Book an Appointment";
+
+            }
+
+        }
+    );
+
 })();
 
-// ---------- Contact form ----------
-document.querySelector(".contact-form").addEventListener("submit", async function (e) {
-  e.preventDefault();
-  var formEl = this;
-  var name = formEl.querySelector('input[type="text"]').value;
-  var email = formEl.querySelector('input[type="email"]').value;
-  var phone = formEl.querySelector('input[type="tel"]').value;
-  var message = formEl.querySelector("textarea").value;
 
-  var { error } = await supabaseClient
-    .from("contact_messages")
-    .insert([{ name: name, email: email, phone: phone, message: message }]);
+// ============================================================
+// CONTACT / BOOKING FORM
+// ============================================================
 
-  if (error) {
-    console.error("Supabase error:", error);
-    alert("Something went wrong sending your message. Please try again.");
-    return;
-  }
+const contactForm =
+    document.querySelector(".contact-form");
 
-  alert("Thanks! We will get back to you soon.");
-  formEl.reset();
-});
+
+if (contactForm) {
+
+    contactForm.addEventListener(
+        "submit",
+        async function (event) {
+
+            event.preventDefault();
+
+
+            const formEl = this;
+
+
+            const name =
+                formEl
+                    .querySelector(
+                        'input[type="text"]'
+                    )
+                    .value
+                    .trim();
+
+
+            const email =
+                formEl
+                    .querySelector(
+                        'input[type="email"]'
+                    )
+                    .value
+                    .trim();
+
+
+            const phone =
+                formEl
+                    .querySelector(
+                        'input[type="tel"]'
+                    )
+                    .value
+                    .trim();
+
+
+            const message =
+                formEl
+                    .querySelector("textarea")
+                    .value
+                    .trim();
+
+
+            const submitButton =
+                formEl.querySelector(
+                    'button[type="submit"]'
+                );
+
+
+            submitButton.disabled = true;
+
+            submitButton.textContent =
+                "Submitting...";
+
+
+            try {
+
+                const { error } =
+                    await supabaseClient
+                        .from("contact_messages")
+                        .insert([
+                            {
+                                name: name,
+                                email: email,
+                                phone: phone,
+                                message: message
+                            }
+                        ]);
+
+
+                if (error) {
+
+                    console.error(
+                        "Supabase error:",
+                        error
+                    );
+
+                    alert(
+                        "Something went wrong sending your message. Please try again."
+                    );
+
+                    submitButton.disabled = false;
+
+                    submitButton.textContent =
+                        "Send Message";
+
+                    return;
+
+                }
+
+
+                alert(
+                    "Thanks! We will get back to you soon. 💗"
+                );
+
+
+                formEl.reset();
+
+
+            } catch (error) {
+
+                console.error(
+                    "Contact form error:",
+                    error
+                );
+
+                alert(
+                    "Something went wrong. Please try again."
+                );
+
+            }
+
+
+            submitButton.disabled = false;
+
+            submitButton.textContent =
+                "Send Message";
+
+        }
+    );
+
+}
